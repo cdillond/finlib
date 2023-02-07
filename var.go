@@ -2,50 +2,22 @@ package finlib
 
 import (
 	"math"
-	"math/big"
 )
 
 // Returns the population variance of s.
-func VarP(s []float64, p Precision) float64 {
+func VarP(s []float64) float64 {
 	if len(s) == 0 {
 		return math.NaN()
 	}
-	if len(s) == 1 {
-		return 0
-	}
-	switch p {
-	case Default:
-		return ecVarP(s)
-	case Naive:
-		return nVarP(s)
-	case Exact:
-		return bigVarP(s)
-	case Fast:
-		return fastVarP(s)
-	default:
-		// should not happen
-		return ecVarP(s)
-	}
+	return ecVarP(s)
 }
 
 // Returns the sample variance of s.
-func VarS(s []float64, p Precision) float64 {
+func VarS(s []float64) float64 {
 	if len(s) < 2 {
 		return math.NaN()
 	}
-	switch p {
-	case Default:
-		return ecVarS(s)
-	case Naive:
-		return nVarS(s)
-	case Exact:
-		return bigVarS(s)
-	case Fast:
-		return fastVarS(s)
-	default:
-		// should not happen
-		return ecVarS(s)
-	}
+	return ecVarS(s)
 }
 
 // error-corrected one-pass population variance algorithm
@@ -72,82 +44,4 @@ func ecVarP(s []float64) float64 {
 // error-corrected one-pass sample variance algorithm
 func ecVarS(s []float64) float64 {
 	return ecVarP(s) * float64(len(s)) / float64(len(s)-1)
-}
-
-// two-pass algorithm; should be exact but slow
-func bigVarP(s []float64) float64 {
-	b := make([]*big.Rat, len(s))
-	sum := big.NewRat(0, 1)
-	for i := 0; i < len(b); i++ {
-		f := big.NewRat(0, 1).SetFloat64(s[i])
-		b[i] = f
-		sum = sum.Add(sum, f)
-	}
-	mean := sum.Quo(sum, big.NewRat(int64(len(s)), 1))
-	difs := big.NewRat(0, 1)
-	for i := 0; i < len(b); i++ {
-		temp := big.NewRat(0, 1)
-		temp = temp.Sub(mean, b[i])
-		difs = difs.Add(difs, temp.Mul(temp, temp))
-	}
-	difs = difs.Quo(difs, big.NewRat(int64(len(s)), 1))
-	out, _ := difs.Float64()
-	return out
-}
-
-// two-pass algorithm; should be exact but slow
-func bigVarS(s []float64) float64 {
-	b := make([]*big.Rat, len(s))
-	sum := big.NewRat(0, 1)
-	for i := 0; i < len(b); i++ {
-		f := big.NewRat(0, 1).SetFloat64(s[i])
-		b[i] = f
-		sum = sum.Add(sum, f)
-	}
-	mean := sum.Quo(sum, big.NewRat(int64(len(s)), 1))
-	difs := big.NewRat(0, 1)
-	for i := 0; i < len(b); i++ {
-		temp := big.NewRat(0, 1)
-		temp = temp.Sub(mean, b[i])
-		difs = difs.Add(difs, temp.Mul(temp, temp))
-	}
-	difs = difs.Quo(difs, big.NewRat(int64(len(s))-1, 1))
-	out, _ := difs.Float64()
-	return out
-}
-
-// naive two-pass algorithm
-func nVarP(s []float64) float64 {
-	mean := Mean(s, Naive)
-	var difs float64
-	for i := 0; i < len(s); i++ {
-		difs += (mean - s[i]) * (mean - s[i])
-	}
-	return difs / float64(len(s))
-}
-
-// naive two-pass algorithm
-func nVarS(s []float64) float64 {
-	mean := Mean(s, Naive)
-	var difs float64
-	for i := 0; i < len(s); i++ {
-		difs += (mean - s[i]) * (mean - s[i])
-	}
-	return difs / (float64(len(s) - 1))
-}
-
-// naive one-pass algorithm
-func fastVarP(s []float64) float64 {
-	var sum, squaresum float64
-	for i := 0; i < len(s); i++ {
-		sum += s[i]
-		squaresum += s[i] * s[i]
-	}
-	mean := sum / float64(len(s))
-	return squaresum/float64(len(s)) - mean*mean
-}
-
-// naive one-pass sample variance algorithm
-func fastVarS(s []float64) float64 {
-	return fastVarP(s) * float64(len(s)) / float64(len(s)-1)
 }

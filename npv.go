@@ -19,6 +19,7 @@ func Npv(rate float64, cashflows []float64) float64 {
 }
 
 // Caculates the net present value of a series of cashflows at a given date. The period is assumed to be 365 days.
+// cashflows and dates must be of equal length. Each cashflow is expected to occur at the date stored at the corresponding index of dates.
 func Xnpv(rate float64, cashflows []float64, dates []time.Time) float64 {
 	var res float64
 	if len(cashflows) != len(dates) || len(cashflows) == 0 {
@@ -37,6 +38,7 @@ func Xnpv(rate float64, cashflows []float64, dates []time.Time) float64 {
 
 // Calculates the net present values of a series of cashflows at the given dates. The period length is assumed to be 1 year, accounting for leap years.
 // In many cases, this returns a different result from Xnpv, which adheres to the formula used by Excel and assumes a year is always 365 days.
+// cashflows and dates must be of equal length. Each cashflow is expected to occur at the date stored at the corresponding index of dates.
 func Xnpv1(rate float64, cashflows []float64, dates []time.Time) float64 {
 	var res float64
 	if len(cashflows) != len(dates) || len(cashflows) == 0 {

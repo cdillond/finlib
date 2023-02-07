@@ -6,22 +6,13 @@ import (
 
 // Returns the population covariance matrix of s1 and s2. For the resulting slice r,
 // r[0][0] = VarP(s1), r[0][1] = CovP(s1, s2), r[1][0] = CovP(s2, s1), r[1][1] = VarP(s2).
-func CovMP(s1, s2 []float64, p Precision) [][]float64 {
+func CovMP(s1, s2 []float64) [][]float64 {
 	if len(s1) != len(s2) || len(s1) < 1 {
 		return [][]float64{{math.NaN(), math.NaN()}, {math.NaN(), math.NaN()}}
 	}
-	switch p {
-	case Default:
-		return ecCovMP(s1, s2)
-	case Naive:
-		return nCovMP(s1, s2)
-	case Exact:
-		return ecCovMP(s1, s2)
-	case Fast:
-		return nCovMP(s1, s2)
-	default:
-		return ecCovMP(s1, s2)
-	}
+
+	return ecCovMP(s1, s2)
+
 }
 
 // requires two passes
@@ -71,69 +62,18 @@ func ecCovMP(s1, s2 []float64) [][]float64 {
 	return [][]float64{{var1, cv}, {cv, var2}}
 }
 
-// requires two passes
-func nCovMP(s1, s2 []float64) [][]float64 {
-	var sum1, sum2 float64
-	for i := 0; i < len(s1); i++ {
-		sum1 += s1[i]
-		sum2 += s2[i]
-	}
-	m1 := sum1 / float64(len(s1))
-	m2 := sum2 / float64(len(s2))
-	var v1, v2 float64
-	var Sum float64
-	for i := 0; i < len(s1); i++ {
-		Sum += (s1[i] - m1) * (s2[i] - m2)
-		v1 += (s1[i] - m1) * (s1[i] - m1)
-		v2 += (s2[i] - m2) * (s2[i] - m2)
-	}
-	var1 := v1 / float64(len(s1))
-	var2 := v2 / float64(len(s2))
-	cv := Sum / float64(len(s1))
-	return [][]float64{{var1, cv}, {cv, var2}}
-}
-
 // Returns the sample covariance matrix of s1 and s2. For the resulting slice r,
 // r[0][0] = VarS(s1), r[0][1] = CovS(s1, s2), r[1][0] = CovS(s2, s1), r[1][1] = VarS(s2).
-func CovMS(s1, s2 []float64, p Precision) [][]float64 {
+func CovMS(s1, s2 []float64) [][]float64 {
 	if len(s1) != len(s2) || len(s1) < 2 {
 		return [][]float64{{math.NaN(), math.NaN()}, {math.NaN(), math.NaN()}}
 	}
-	switch p {
-	case Default:
-		matrix := ecCovMP(s1, s2)
-		matrix[0][0] = matrix[0][0] * float64(len(s1)) / float64(len(s1)-1)
-		matrix[0][1] = matrix[0][1] * float64(len(s1)) / float64(len(s1)-1)
-		matrix[1][0] = matrix[1][0] * float64(len(s1)) / float64(len(s1)-1)
-		matrix[1][1] = matrix[1][1] * float64(len(s1)) / float64(len(s1)-1)
-		return matrix
-	case Naive:
-		matrix := nCovMP(s1, s2)
-		matrix[0][0] = matrix[0][0] * float64(len(s1)) / float64(len(s1)-1)
-		matrix[0][1] = matrix[0][1] * float64(len(s1)) / float64(len(s1)-1)
-		matrix[1][0] = matrix[1][0] * float64(len(s1)) / float64(len(s1)-1)
-		matrix[1][1] = matrix[1][1] * float64(len(s1)) / float64(len(s1)-1)
-		return matrix
-	case Exact:
-		matrix := ecCovMP(s1, s2)
-		matrix[0][0] = matrix[0][0] * float64(len(s1)) / float64(len(s1)-1)
-		matrix[0][1] = matrix[0][1] * float64(len(s1)) / float64(len(s1)-1)
-		matrix[1][0] = matrix[1][0] * float64(len(s1)) / float64(len(s1)-1)
-		matrix[1][1] = matrix[1][1] * float64(len(s1)) / float64(len(s1)-1)
-		return matrix
-	case Fast:
-		matrix := nCovMP(s1, s2)
-		matrix[0][0] = matrix[0][0] * float64(len(s1)) / float64(len(s1)-1)
-		matrix[0][1] = matrix[0][1] * float64(len(s1)) / float64(len(s1)-1)
-		matrix[1][0] = matrix[1][0] * float64(len(s1)) / float64(len(s1)-1)
-		matrix[1][1] = matrix[1][1] * float64(len(s1)) / float64(len(s1)-1)
-		return matrix
-	default:
-		matrix := ecCovMP(s1, s2)
-		matrix[0][0] = matrix[0][0] * float64(len(s1)) / float64(len(s1)-1)
-		matrix[0][1] = matrix[0][1] * float64(len(s1)) / float64(len(s1)-1)
-		matrix[1][0] = matrix[1][0] * float64(len(s1)) / float64(len(s1)-1)
-		matrix[1][1] = matrix[1][1] * float64(len(s1)) / float64(len(s1)-1)
-		return matrix
-	}
+
+	matrix := ecCovMP(s1, s2)
+	matrix[0][0] = matrix[0][0] * float64(len(s1)) / float64(len(s1)-1)
+	matrix[0][1] = matrix[0][1] * float64(len(s1)) / float64(len(s1)-1)
+	matrix[1][0] = matrix[1][0] * float64(len(s1)) / float64(len(s1)-1)
+	matrix[1][1] = matrix[1][1] * float64(len(s1)) / float64(len(s1)-1)
+	return matrix
+
 }

@@ -3,57 +3,39 @@ package finlib
 import "math"
 
 // Returns the depreciation of an asset over its life using the fixed-declining balance method.
-// The rate is rounded to three decimal places. For greater precision, use Xdb.
-func Db(cost, salvage, month float64, life uint) []float64 {
-	res := make([]float64, life)
-	if life == 0 {
-		return res
-	}
+// The output of this function is intended to match the output of Excel's DB function; for greater precision, use Xdb.
+// cost is the initial cost of the asset, salvage is the value at the end of the depreciation, life is the number of periods over which the asset is being depreciated, and month is the number of months in the first year.
+func Db(cost, salvage, month float64, life, period uint) float64 {
 	rate := 1 - math.Pow(salvage/cost, 1/float64(life))
 	rate = math.Round(rate*1_000) / 1_000
-	res[0] = cost * rate * month / 12
-	total := res[0]
-	for i := 1; i < int(life)-1; i++ {
-		n := (cost - total) * rate
-		res[i] = n
-		total += n
+	total := cost * rate * month / 12
+	curr := total
+	// may be numerically unstable
+	for i := 1; i < int(period); i++ {
+		if i == int(life) {
+			curr = (cost - total) * rate * (12 - month) / 12
+			break
+		}
+		curr = (cost - total) * rate
+		total += curr
 	}
-	res[life-1] = (cost - total) * rate * (12 - month) / 12
-	return res
+	return math.Round(curr*100) / 100
 }
 
 // Returns the depreciation of an asset over its life using the fixed-declining balance method.
-func Xdb(cost, salvage, month float64, life uint) []float64 {
-	res := make([]float64, life)
-	if life == 0 {
-		return res
-	}
+// cost is the initial cost of the asset, salvage is the value at the end of the depreciation, life is the number of periods over which the asset is being depreciated, and month is the number of months in the first year.
+func Xdb(cost, salvage, month float64, life, period uint) float64 {
 	rate := 1 - math.Pow(salvage/cost, 1/float64(life))
-	res[0] = cost * rate * month / 12
-	total := res[0]
-	for i := 1; i < int(life)-1; i++ {
-		n := (cost - total) * rate
-		res[i] = n
-		total += n
-	}
-	res[life-1] = (cost - total) * rate * (12 - month) / 12
-	return res
-}
-
-// Returns the depreciation of an asset for a specified period using the declining balance method with the specified factor.
-func Fdb(cost, salvage, factor float64, period, life uint) float64 {
-	//res := make([]float64, life)
-	var total float64
-	for i := 0; i < int(period); i++ {
-		n1 := (cost - total) * (factor / float64(life))
-		n2 := cost - salvage - total
-		if n1 < n2 {
-			//res[i] = n1
-			total += n1
-		} else {
-			//res[i] = n2
-			total += n2
+	total := cost * rate * month / 12
+	curr := total
+	// may be numerically unstable
+	for i := 1; i < int(period); i++ {
+		if i == int(life) {
+			curr = (cost - total) * rate * (12 - month) / 12
+			break
 		}
+		curr = (cost - total) * rate
+		total += curr
 	}
-	return total
+	return curr
 }

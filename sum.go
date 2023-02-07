@@ -1,31 +1,8 @@
 package finlib
 
-import (
-	"math/big"
-)
-
 // Returns the sum of all values in s.
-func Sum(s []float64, p Precision) float64 {
-	switch p {
-	case Default:
-		return kahanSum(s)
-	case Naive:
-		return nSum(s)
-	case Exact:
-		return bigSum(s)
-	case Fast:
-		return nSum(s)
-	default:
-		return kahanSum(s)
-	}
-}
-
-func nSum(s []float64) float64 {
-	var sum float64
-	for i := 0; i < len(s); i++ {
-		sum += s[i]
-	}
-	return sum
+func Sum(s []float64) float64 {
+	return kahanSum(s)
 }
 
 // error correcting
@@ -39,13 +16,4 @@ func kahanSum(s []float64) float64 {
 		sum = t         // assign new sum to old sum variable
 	}
 	return sum
-}
-
-func bigSum(s []float64) float64 {
-	Sum := big.NewRat(0, 1)
-	for i := 0; i < len(s); i++ {
-		Sum = Sum.Add(Sum, big.NewRat(0, 1).SetFloat64(s[i]))
-	}
-	fsum, _ := Sum.Float64()
-	return fsum
 }

@@ -4,35 +4,13 @@ import (
 	"math"
 )
 
-// Returns a simple linear regression model for s using the ordinary least squares method.
-// The returned slice corresponds to the model y = mx + b, where return[0] = b and return[1] = m.
-func LinReg(s []float64, p Precision) []float64 {
-	switch p {
-	case Default:
-		return ecLinReg(s)
-	case Exact:
-		return ecLinReg(s)
-
-	}
-	var sumx, sumy, sumxy, sumxx float64
-	var j float64
-	for i := 0; i < len(s); i, j = i+1, j+1 {
-		sumx += j
-		sumy += s[i]
-		sumxy += s[i] * j
-		sumxx += j * j
-	}
-	fl := float64(len(s))
-	dena := (fl*sumxx - sumx*sumx)
-	if dena == 0 || len(s) == 0 {
-		return []float64{math.NaN(), math.NaN()}
-	}
-	a := (fl*sumxy - sumx*sumy) / dena
-	b := sumy/fl - a*sumx/fl
-	return []float64{b, a}
+// Returns the y-intercept and slope of a simple linear regression model for s using the ordinary least squares method.
+// If y = a + bx is a linear regression model of s, the first return value of LinReg(s) is a and the second is b.
+func LinReg(s []float64) (float64, float64) {
+	return ecLinReg(s)
 }
 
-func ecLinReg(s []float64) []float64 {
+func ecLinReg(s []float64) (float64, float64) {
 	var sumx, sumy, sumxy, sumxx float64
 	var j float64
 	var sumxi, sumxxi int
@@ -62,9 +40,9 @@ func ecLinReg(s []float64) []float64 {
 	fl := float64(len(s))
 	dena := (fl*sumxx - sumx*sumx)
 	if dena == 0 || len(s) == 0 {
-		return []float64{math.NaN(), math.NaN()}
+		return math.NaN(), math.NaN()
 	}
 	a := (fl*sumxy - sumx*sumy) / dena
 	b := sumy/fl - a*sumx/fl
-	return []float64{b, a}
+	return b, a
 }

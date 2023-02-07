@@ -2,8 +2,8 @@ package finlib
 
 import "math"
 
-// Returns the future value given a risk-free rate, the number of periods, a fixed payment amount, and the present value.
-// eop should be set to true if payments are made at the end of the compounding period, and false if they are made at the beginning of the period.
+// Returns the future value given the interest rate per priod (rate), the number of periods (nper), a fixed payment amount (pmt), and the present value (pv).
+// eop should be set to true if payments are made at the end of the period, and false if they are made at the beginning of the period.
 func Fv(rate, nper, pmt, pv float64, eop bool) float64 {
 	if rate == 0 {
 		return -1 * (pmt*nper + pv)

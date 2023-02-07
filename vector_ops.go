@@ -5,9 +5,9 @@ import (
 	"math"
 )
 
-var ErrDifLen = errors.New("slices s1 and s2 must be the same length")
+var ErrDifLen = errors.New("slices s1 and s2 must be of equal length")
 
-// Returns a slice consisting of each element of s1 added to the respective element of s2. s1 and s2 must have equal lengths.
+// Returns the element-wise sum of s1 and s2. s1 and s2 must have equal lengths.
 func Add(s1, s2 []float64) ([]float64, error) {
 	l1, l2 := len(s1), len(s2)
 	if l1 != l2 {
@@ -20,7 +20,7 @@ func Add(s1, s2 []float64) ([]float64, error) {
 	return res, nil
 }
 
-// Returns a slice consisting of each element of s1 divided by the respective element of s2. s1 and s2 must have equal lengths.
+// Returns the element-wise quotient of s1 divided by s2. s1 and s2 must have equal lengths.
 func Div(s1, s2 []float64) ([]float64, error) {
 	l1, l2 := len(s1), len(s2)
 	if l1 != l2 {
@@ -36,7 +36,7 @@ func Div(s1, s2 []float64) ([]float64, error) {
 	return res, nil
 }
 
-// Returns a slice consisting of each element of s1 multiplied by the respective element of s2. s1 and s2 must have equal lengths.
+// Returns the element-wise product (Hadamard product) of s1 and s2. s1 and s2 must have equal lengths.
 func Mul(s1, s2 []float64) ([]float64, error) {
 	l1, l2 := len(s1), len(s2)
 	if l1 != l2 {
@@ -49,7 +49,7 @@ func Mul(s1, s2 []float64) ([]float64, error) {
 	return res, nil
 }
 
-// Returns a slice consisting of each element of s2 subtracted from the respective element of s1. s1 and s2 must have equal lengths.
+// Returns the element-wise difference of s2 subtracted from s1. s1 and s2 must have equal lengths.
 func Sub(s1, s2 []float64) ([]float64, error) {
 	l1, l2 := len(s1), len(s2)
 	if l1 != l2 {
