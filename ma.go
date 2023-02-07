@@ -6,7 +6,7 @@ import (
 
 // Returns the simple moving averages of each period-length window of s.
 // To avoid O(n^2) time complexity, Sma is calculated on a rolling basis.
-// This means that if s includes a NaN or Inf value anywhere, at least part of the return value will be corrupted.
+// As a result of this, if s includes a NaN or Inf value anywhere, at least part of the return value will be corrupted.
 func Sma(s []float64, period int) []float64 {
 	res := make([]float64, len(s))
 	// return early if period is 0 or out of bounds
@@ -52,7 +52,7 @@ func Wma(s, weights []float64) []float64 {
 
 	for i := len(weights) - 1; i < len(s); i++ {
 		k, _ := Mul(weights, s[i-len(weights):i])
-		res[i] = Sum(k, Default) / p
+		res[i] = Sum(k) / p
 	}
 	return res
 }
