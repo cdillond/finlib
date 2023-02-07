@@ -4,7 +4,7 @@ import (
 	"math"
 )
 
-// replaces all NaN and Inf values with 0
+// Replaces all NaN and Inf values with 0.
 func ZeroNaNInfs(s []float64) []float64 {
 	res := make([]float64, len(s))
 	for i, f := range s {

@@ -5,7 +5,7 @@ import (
 	"math/big"
 )
 
-// https://www.osti.gov/servlets/purl/1028931
+// Returns the population covariance of s1 and s2.
 func CoVarP(s1, s2 []float64, p Precision) float64 {
 	if len(s1) != len(s2) || len(s1) < 2 {
 		return math.NaN()
@@ -25,7 +25,7 @@ func CoVarP(s1, s2 []float64, p Precision) float64 {
 	}
 }
 
-// this does multiple passes...
+// this does multiple passes... https://www.osti.gov/servlets/purl/1028931
 func ecCoVarP(s1, s2 []float64) float64 {
 	var y1, c1, t1, sum1 float64
 	var y2, c2, t2, sum2 float64
@@ -104,7 +104,7 @@ func bigCoVarP(s1, s2 []float64) float64 {
 	return res
 }
 
-// https://www.osti.gov/servlets/purl/1028931
+// Returns the sample covariance of s1 and s2.
 func CoVarS(s1, s2 []float64, p Precision) float64 {
 	if len(s1) != len(s2) || len(s1) < 2 {
 		return math.NaN()

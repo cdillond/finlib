@@ -51,7 +51,7 @@ func Wma(s, weights []float64) []float64 {
 	}
 
 	for i := len(weights) - 1; i < len(s); i++ {
-		k := Mul(weights, s[i-len(weights):i])
+		k, _ := Mul(weights, s[i-len(weights):i])
 		res[i] = Sum(k, Default) / p
 	}
 	return res

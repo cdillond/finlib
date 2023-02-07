@@ -5,7 +5,7 @@ package finlib
 func Macd(s []float64, fast, slow, signal int, p Precision) ([]float64, []float64, []float64, []float64) {
 	fa := Ema(s, fast)
 	sl := Ema(s, slow)
-	macd := Sub(fa, sl)
+	macd, _ := Sub(fa, sl)
 	si := Ema(macd, signal)
 	return fa, sl, macd, si
 }

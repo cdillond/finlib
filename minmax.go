@@ -81,6 +81,7 @@ func MinMax(s []float64) (float64, float64) {
 	return min, max
 }
 
+// Returns the first indices of the minimum and maximum values included in s.
 func MinMaxIndex(s []float64) (int, int) {
 	minIndex, maxIndex := 0, 0
 	if len(s) < 1 {

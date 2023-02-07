@@ -5,7 +5,7 @@ import (
 )
 
 // Returns the population covariance matrix of s1 and s2. For the resulting slice r,
-// r[0][0] = Var(s1), r[0][1] = Cov(s1, s2), r[1][0] = Cov(s2, s1), r[1][1] = Var(s2)
+// r[0][0] = VarP(s1), r[0][1] = CovP(s1, s2), r[1][0] = CovP(s2, s1), r[1][1] = VarP(s2).
 func CovMP(s1, s2 []float64, p Precision) [][]float64 {
 	if len(s1) != len(s2) || len(s1) < 1 {
 		return [][]float64{{math.NaN(), math.NaN()}, {math.NaN(), math.NaN()}}
@@ -94,7 +94,7 @@ func nCovMP(s1, s2 []float64) [][]float64 {
 }
 
 // Returns the sample covariance matrix of s1 and s2. For the resulting slice r,
-// r[0][0] = Var(s1), r[0][1] = Cov(s1, s2), r[1][0] = Cov(s2, s1), r[1][1] = Var(s2)
+// r[0][0] = VarS(s1), r[0][1] = CovS(s1, s2), r[1][0] = CovS(s2, s1), r[1][1] = VarS(s2).
 func CovMS(s1, s2 []float64, p Precision) [][]float64 {
 	if len(s1) != len(s2) || len(s1) < 2 {
 		return [][]float64{{math.NaN(), math.NaN()}, {math.NaN(), math.NaN()}}
