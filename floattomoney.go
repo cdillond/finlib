@@ -4,7 +4,7 @@ import (
 	"math"
 )
 
-// Returns rounds f to the nearest cent and returns it as a string formatted as #,###.## or, if negative, (#,###.##).
+// Rounds f to the nearest cent and returns it as a string formatted as #,###.## or, if negative, (#,###.##).
 func FloatToMoney(f float64) string {
 	var res string
 	var neg bool
